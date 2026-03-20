@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Portal Auth</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Job Portal Authentication</h1>
+
+    <div class="card">
+      <h2>Select Role</h2>
+      <div class="role-buttons">
+        <button id="employerBtn">Employer</button>
+        <button id="jobseekerBtn">Jobseeker</button>
+      </div>
+      <p>Selected Role: <span id="selectedRole">None</span></p>
+    </div>
+
+    <div class="card">
+      <h2>Phone Authentication</h2>
+      <input type="text" id="phoneNumber" placeholder="+91XXXXXXXXXX" />
+      <button id="sendOtpBtn">Send OTP</button>
+
+      <div id="recaptcha-container"></div>
+
+      <input type="text" id="otpCode" placeholder="Enter OTP" />
+      <button id="verifyOtpBtn">Verify OTP</button>
+    </div>
+
+    <div class="card">
+      <h2>Status</h2>
+      <p id="message">Waiting...</p>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

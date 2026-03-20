@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 500px;
+  margin: 30px auto;
+}
+
+h1 {
+  text-align: center;
+  color: #1f3b57;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 12px 16px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #1f3b57;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2d567d;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+#message {
+  font-weight: bold;
+  color: green;
+}
