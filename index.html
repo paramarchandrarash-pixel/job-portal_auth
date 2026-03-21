@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>Job Portal Authentication & Profile</h1>
+
+    <!-- Role Selection -->
+    <div class="card">
+      <h2>Select Role</h2>
+      <button id="employerBtn">Employer</button>
+      <button id="jobseekerBtn">Jobseeker</button>
+      <p id="selectedRole">Selected Role: None</p>
+    </div>
+
+    <!-- OTP Section -->
+    <div class="card">
+      <h2>Phone Authentication (Demo)</h2>
+
+      <input type="text" id="phoneInput" placeholder="Enter Phone (+91XXXXXXXXXX)">
+      <button id="sendOtpBtn">Send OTP</button>
+
+      <input type="text" id="otpInput" placeholder="Enter OTP">
+      <button id="verifyOtpBtn">Verify OTP</button>
+
+      <p id="message"></p>
+    </div>
+
+    <!-- Jobseeker Form -->
+    <div class="card hidden" id="jobseekerForm">
+      <h2>Jobseeker Profile</h2>
+
+      <input type="text" id="js_name" placeholder="Full Name">
+      <input type="email" id="js_email" placeholder="Email">
+      <input type="text" id="js_phone" placeholder="Phone Number">
+      <input type="text" id="js_skills" placeholder="Skills">
+      <input type="text" id="js_education" placeholder="Education">
+      <input type="text" id="js_experience" placeholder="Experience">
+      <input type="text" id="js_address" placeholder="Address">
+      <input type="file" id="js_resume">
+
+      <button id="saveJobseeker">Save Profile</button>
+    </div>
+
+    <!-- Employer Form -->
+    <div class="card hidden" id="employerForm">
+      <h2>Employer Profile</h2>
+
+      <input type="text" id="emp_company" placeholder="Company Name">
+      <input type="email" id="emp_email" placeholder="Official Email">
+      <input type="text" id="emp_phone" placeholder="Phone Number">
+      <input type="text" id="emp_type" placeholder="Company Type">
+      <input type="text" id="emp_address" placeholder="Company Address">
+      <input type="text" id="emp_desc" placeholder="Company Description">
+      <input type="text" id="emp_website" placeholder="Website">
+      <input type="text" id="emp_person" placeholder="Contact Person Name">
+
+      <button id="saveEmployer">Save Profile</button>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
