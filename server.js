@@ -11,132 +11,82 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
+console.log("ENV CHECK:", process.env.MONGODB_URL);
+
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URL, {serverSelectionTimeoutMS: 60000})
   .then(() => {
-    console.log("MongoDB connected successfully ✅");
+    console.log("MongoDB connected successfully");
   })
   .catch((error) => {
-    console.error("MongoDB connection failed ❌", error.message);
+    console.error("MongoDB connection failed:", error.message);
   });
 
 // Schema
-const profileSchema = new mongoose.Schema(
-  {
-    role: {
-      type: String,
-      required: true
-    },
-
-    // Common fields
-    email: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    phone: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    address: {
-      type: String,
-      trim: true
-    },
-
-    // Jobseeker fields
-    name: {
-      type: String,
-      trim: true
-    },
-    skills: {
-      type: String,
-      trim: true
-    },
-    education: {
-      type: String,
-      trim: true
-    },
-    experience: {
-      type: String,
-      trim: true
-    },
-    resumeName: {
-      type: String,
-      trim: true
-    },
-
-    // Employer fields
-    company: {
-      type: String,
-      trim: true
-    },
-    type: {
-      type: String,
-      trim: true
-    },
-    desc: {
-      type: String,
-      trim: true
-    },
-    website: {
-      type: String,
-      trim: true
-    },
-    person: {
-      type: String,
-      trim: true
-    }
+const profileSchema = new mongoose.Schema({
+  role: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
+
+  // Common fields
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+
+  // Employer fields
+  companyName: {
+    type: String,
+  },
+  companyType: {
+    type: String,
+  },
+
+  // Jobseeker fields
+  fullName: {
+    type: String,
+  },
+  skills: {
+    type: String,
+  },
+  resume: {
+    type: String,
+  },
+});
 
 const Profile = mongoose.model("Profile", profileSchema);
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("Server is running");
 });
 
 // Save profile route
-app.post("/save-profile", async (req, res) => {
+app.post("/api/profile", async (req, res) => {
   try {
-    const data = req.body;
-
-    const newProfile = new Profile(data);
+    const newProfile = new Profile(req.body);
     await newProfile.save();
 
-    console.log("Saved Data:", data);
-
-    res.json({
-      message: "Profile saved successfully ✅",
-      data
+    res.status(201).json({
+      success: true,
+      message: "Profile saved successfully",
+      data: newProfile,
     });
   } catch (error) {
-    console.error("Save Error:", error);
     res.status(500).json({
-      message: "Failed to save profile ❌"
+      success: false,
+      message: "Error saving profile",
+      error: error.message,
     });
   }
 });
 
-// Fetch all profiles route
-app.get("/profiles", async (req, res) => {
-  try {
-    const profiles = await Profile.find().sort({ createdAt: -1 });
-
-    res.json({
-      message: "Profiles fetched successfully ✅",
-      data: profiles
-    });
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    res.status(500).json({
-      message: "Failed to fetch profiles ❌"
-    });
-  }
-});
-
+// Start server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
