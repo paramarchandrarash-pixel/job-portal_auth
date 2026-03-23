@@ -1,220 +1,94 @@
-// Role buttons
+import { supabase } from "./supabase.js";
 const employerBtn = document.getElementById("employerBtn");
 const jobseekerBtn = document.getElementById("jobseekerBtn");
-const selectedRole = document.getElementById("selectedRole");
-
-// OTP section
-const phoneInput = document.getElementById("phoneInput");
-const otpInput = document.getElementById("otpInput");
 const sendOtpBtn = document.getElementById("sendOtpBtn");
 const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-const message = document.getElementById("message");
+const phoneInput = document.getElementById("phone");
+const otpInput = document.getElementById("otp");
+const otpStatus = document.getElementById("otpStatus");
+const phoneError = document.getElementById("phoneError");
+const otpError = document.getElementById("otpError");
 
-// Forms
-const jobseekerForm = document.getElementById("jobseekerForm");
-const employerForm = document.getElementById("employerForm");
 
-// Jobseeker fields
-const jsName = document.getElementById("js_name");
-const jsEmail = document.getElementById("js_email");
-const jsPhone = document.getElementById("js_phone");
-const jsSkills = document.getElementById("js_skills");
-const jsEducation = document.getElementById("js_education");
-const jsExperience = document.getElementById("js_experience");
-const jsAddress = document.getElementById("js_address");
-const jsResume = document.getElementById("js_resume");
-const saveJobseeker = document.getElementById("saveJobseeker");
+let generatedOtp = "1234";
+let userRole = "";
 
-// Employer fields
-const empCompany = document.getElementById("emp_company");
-const empEmail = document.getElementById("emp_email");
-const empPhone = document.getElementById("emp_phone");
-const empType = document.getElementById("emp_type");
-const empAddress = document.getElementById("emp_address");
-const empDesc = document.getElementById("emp_desc");
-const empWebsite = document.getElementById("emp_website");
-const empPerson = document.getElementById("emp_person");
-const saveEmployer = document.getElementById("saveEmployer");
+function clearErrors() {
+  phoneError.textContent = "";
+  otpError.textContent = "";
+}
 
-// Current role
-let currentRole = "";
-const demoOtp = "251201";
+function setActiveRole(role) {
+  userRole = role;
 
-// =========================
-// Role Selection
-// =========================
-jobseekerBtn.addEventListener("click", () => {
-  currentRole = "Jobseeker";
-  selectedRole.innerText = "Selected Role: Jobseeker";
+  employerBtn.classList.remove("active");
+  jobseekerBtn.classList.remove("active");
 
-  jobseekerForm.classList.remove("hidden");
-  employerForm.classList.add("hidden");
-
-  jobseekerBtn.style.background = "#0f8b4c";
-  employerBtn.style.background = "#23408e";
-});
+  if (role === "employer") {
+    employerBtn.classList.add("active");
+  } else {
+    jobseekerBtn.classList.add("active");
+  }
+}
 
 employerBtn.addEventListener("click", () => {
-  currentRole = "Employer";
-  selectedRole.innerText = "Selected Role: Employer";
-
-  employerForm.classList.remove("hidden");
-  jobseekerForm.classList.add("hidden");
-
-  employerBtn.style.background = "#0f8b4c";
-  jobseekerBtn.style.background = "#23408e";
+  setActiveRole("employer");
 });
 
-// =========================
-// OTP Demo
-// =========================
+jobseekerBtn.addEventListener("click", () => {
+  setActiveRole("jobseeker");
+});
+
 sendOtpBtn.addEventListener("click", () => {
+  clearErrors();
+  otpStatus.textContent = "";
+
   const phone = phoneInput.value.trim();
 
+  if (userRole === "") {
+    phoneError.textContent = "Please select Employer or Job Seeker first.";
+    return;
+  }
+
   if (phone === "") {
-    message.style.color = "red";
-    message.innerText = "Please enter phone number.";
+    phoneError.textContent = "Phone number is required.";
     return;
   }
 
-  if (currentRole === "") {
-    message.style.color = "red";
-    message.innerText = "Please select role first.";
+  if (!/^[0-9]{10,13}$/.test(phone.replace("+91", "").trim())) {
+    phoneError.textContent = "Enter a valid phone number.";
     return;
   }
 
-  message.style.color = "green";
-  message.innerText = "Demo OTP sent successfully. Use 251201";
+  otpStatus.textContent = "OTP sent successfully.";
 });
 
 verifyOtpBtn.addEventListener("click", () => {
+  clearErrors();
+
   const enteredOtp = otpInput.value.trim();
 
+  if (userRole === "") {
+    phoneError.textContent = "Please select Employer or Job Seeker first.";
+    return;
+  }
+
   if (enteredOtp === "") {
-    message.style.color = "red";
-    message.innerText = "Please enter OTP.";
+    otpError.textContent = "OTP is required.";
     return;
   }
 
-  if (enteredOtp === demoOtp) {
-    message.style.color = "green";
-    message.innerText = "OTP verified successfully.";
+  if (enteredOtp !== generatedOtp) {
+    otpError.textContent = "Invalid OTP. Use demo OTP: 1234";
+    return;
+  }
+
+  sessionStorage.setItem("otpVerified", "true");
+  sessionStorage.setItem("userRole", userRole);
+
+  if (userRole === "employer") {
+    window.location.href = "employer.html";
   } else {
-    message.style.color = "red";
-    message.innerText = "Invalid OTP.";
+    window.location.href = "jobseeker.html";
   }
-});
-
-// =========================
-// Jobseeker Save -> Backend
-// =========================
-saveJobseeker.addEventListener("click", () => {
-  const name = jsName.value.trim();
-  const email = jsEmail.value.trim();
-  const phone = jsPhone.value.trim();
-  const skills = jsSkills.value.trim();
-  const education = jsEducation.value.trim();
-  const experience = jsExperience.value.trim();
-  const address = jsAddress.value.trim();
-  const resumeFile = jsResume.files[0];
-
-  if (
-    name === "" ||
-    email === "" ||
-    phone === "" ||
-    skills === "" ||
-    education === "" ||
-    experience === "" ||
-    address === ""
-  ) {
-    alert("Please fill all Jobseeker fields.");
-    return;
-  }
-
-  if (!resumeFile) {
-    alert("Please upload resume.");
-    return;
-  }
-
-  fetch("http://localhost:5000/save-profile", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      role: "Jobseeker",
-      name,
-      email,
-      phone,
-      skills,
-      education,
-      experience,
-      address,
-      resumeName: resumeFile.name
-    })
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.message);
-      console.log("Jobseeker response:", data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Failed to save jobseeker profile.");
-    });
-});
-
-// =========================
-// Employer Save -> Backend
-// =========================
-saveEmployer.addEventListener("click", () => {
-  const company = empCompany.value.trim();
-  const email = empEmail.value.trim();
-  const phone = empPhone.value.trim();
-  const type = empType.value.trim();
-  const address = empAddress.value.trim();
-  const desc = empDesc.value.trim();
-  const website = empWebsite.value.trim();
-  const person = empPerson.value.trim();
-
-  if (
-    company === "" ||
-    email === "" ||
-    phone === "" ||
-    type === "" ||
-    address === "" ||
-    desc === "" ||
-    website === "" ||
-    person === ""
-  ) {
-    alert("Please fill all Employer fields.");
-    return;
-  }
-
-  fetch("http://localhost:5000/save-profile", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      role: "Employer",
-      company,
-      email,
-      phone,
-      type,
-      address,
-      desc,
-      website,
-      person
-    })
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.message);
-      console.log("Employer response:", data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Failed to save employer profile.");
-    });
 });
