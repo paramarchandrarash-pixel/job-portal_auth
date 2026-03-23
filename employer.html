@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employer Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="form-card">
+      <h1>Employer Profile</h1>
+
+      <form id="employerForm">
+        <div class="input-group">
+          <label>Company Name</label>
+          <input type="text" id="companyName" placeholder="Enter company name" />
+          <small id="companyNameError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Official Email</label>
+          <input type="email" id="officialEmail" placeholder="Enter official email" />
+          <small id="officialEmailError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="text" id="companyPhone" placeholder="Enter company phone number" />
+          <small id="companyPhoneError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Company Type</label>
+          <input type="text" id="companyType" placeholder="Enter company type" />
+          <small id="companyTypeError" class="error-text"></small>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (sessionStorage.getItem("otpVerified") !== "true" || sessionStorage.getItem("userRole") !== "employer") {
+      window.location.href = "index.html";
+    }
+
+    const employerForm = document.getElementById("employerForm");
+    const companyName = document.getElementById("companyName");
+    const officialEmail = document.getElementById("officialEmail");
+    const companyPhone = document.getElementById("companyPhone");
+    const companyType = document.getElementById("companyType");
+
+    const companyNameError = document.getElementById("companyNameError");
+    const officialEmailError = document.getElementById("officialEmailError");
+    const companyPhoneError = document.getElementById("companyPhoneError");
+    const companyTypeError = document.getElementById("companyTypeError");
+
+    function clearEmployerErrors() {
+      companyNameError.textContent = "";
+      officialEmailError.textContent = "";
+      companyPhoneError.textContent = "";
+      companyTypeError.textContent = "";
+    }
+
+    employerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearEmployerErrors();
+
+      let isValid = true;
+
+      if (companyName.value.trim() === "") {
+        companyNameError.textContent = "Company name is required.";
+        isValid = false;
+      }
+
+      if (officialEmail.value.trim() === "") {
+        officialEmailError.textContent = "Official email is required.";
+        isValid = false;
+      } else if (!/^[^ ]+@[^ ]+\.[a-z]{2,3}$/.test(officialEmail.value.trim())) {
+        officialEmailError.textContent = "Enter a valid email.";
+        isValid = false;
+      }
+
+      if (companyPhone.value.trim() === "") {
+        companyPhoneError.textContent = "Phone number is required.";
+        isValid = false;
+      }
+
+      if (companyType.value.trim() === "") {
+        companyTypeError.textContent = "Company type is required.";
+        isValid = false;
+      }
+
+      if (isValid) {
+        alert("Employer Profile Submitted Successfully!");
+      }
+    });
+  </script>
+</body>
+</html>

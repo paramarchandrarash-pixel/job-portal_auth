@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Seeker Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="form-card">
+      <h1>Job Seeker Profile</h1>
+
+      <form id="jobseekerForm">
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter full name" />
+          <small id="fullNameError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="jobEmail" placeholder="Enter email" />
+          <small id="jobEmailError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="text" id="jobPhone" placeholder="Enter phone number" />
+          <small id="jobPhoneError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Skills</label>
+          <input type="text" id="skills" placeholder="Enter skills" />
+          <small id="skillsError" class="error-text"></small>
+        </div>
+
+        <div class="input-group">
+          <label>Upload Resume</label>
+          <input type="file" id="resume" class="file-input" />
+          <small id="resumeError" class="error-text"></small>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (sessionStorage.getItem("otpVerified") !== "true" || sessionStorage.getItem("userRole") !== "jobseeker") {
+      window.location.href = "index.html";
+    }
+
+    const jobseekerForm = document.getElementById("jobseekerForm");
+    const fullName = document.getElementById("fullName");
+    const jobEmail = document.getElementById("jobEmail");
+    const jobPhone = document.getElementById("jobPhone");
+    const skills = document.getElementById("skills");
+    const resume = document.getElementById("resume");
+
+    const fullNameError = document.getElementById("fullNameError");
+    const jobEmailError = document.getElementById("jobEmailError");
+    const jobPhoneError = document.getElementById("jobPhoneError");
+    const skillsError = document.getElementById("skillsError");
+    const resumeError = document.getElementById("resumeError");
+
+    function clearJobErrors() {
+      fullNameError.textContent = "";
+      jobEmailError.textContent = "";
+      jobPhoneError.textContent = "";
+      skillsError.textContent = "";
+      resumeError.textContent = "";
+    }
+
+    jobseekerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearJobErrors();
+
+      let isValid = true;
+
+      if (fullName.value.trim() === "") {
+        fullNameError.textContent = "Full name is required.";
+        isValid = false;
+      }
+
+      if (jobEmail.value.trim() === "") {
+        jobEmailError.textContent = "Email is required.";
+        isValid = false;
+      } else if (!/^[^ ]+@[^ ]+\.[a-z]{2,3}$/.test(jobEmail.value.trim())) {
+        jobEmailError.textContent = "Enter a valid email.";
+        isValid = false;
+      }
+
+      if (jobPhone.value.trim() === "") {
+        jobPhoneError.textContent = "Phone number is required.";
+        isValid = false;
+      }
+
+      if (skills.value.trim() === "") {
+        skillsError.textContent = "Skills are required.";
+        isValid = false;
+      }
+
+      if (resume.files.length === 0) {
+        resumeError.textContent = "Please upload your resume.";
+        isValid = false;
+      }
+
+      if (isValid) {
+        alert("Job Seeker Profile Submitted Successfully!");
+      }
+    });
+  </script>
+</body>
+</html>
